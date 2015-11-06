@@ -30,6 +30,8 @@ add_action('add_meta_boxes', 'add_iumb_metabox');
 function iumb_meta_callback($post) {
     wp_nonce_field( basename(__FILE__), 'iumb_meta_nonce' );
     $id = get_post_meta($post->ID, 'iumb', true);
+    $desc = get_post_meta($post->ID, 'yaproduct_description', true);
+    $name = get_post_meta($post->ID, 'yaproduct_name', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
     ?>
 
@@ -38,13 +40,13 @@ function iumb_meta_callback($post) {
 
 
     <p><label for="myplugin_new_field">Название услуги\товара</label><br>
-    <input type="text" id= "myplugin_new_field" name="jekag_name" value="<?php echo $image ? $image[0] : ''; ?>"  /><br>
+    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
     <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
-    <textarea rows="4" name="jekag_description"><?php echo $image ? $image[0] : ''; ?></textarea><br>
+    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
     <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="jekag_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
-    <td><select name="jekag_currency">
-            <option value="<?php echo $image ? $image[0] : ''; ?>" selected>руб.</option>
+    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
+    <td><select name="yaproduc_currency">
+            <option value="<?php echo $image ? $image[1] : ''; ?>" selected>руб.</option>
             <option value="1">$</option>
             <option value="2">грн.</option>
           </select></td></tr></table></p>
@@ -59,13 +61,13 @@ function iumb_meta_callback($post) {
 
 
     <p><label for="myplugin_new_field">Название услуги\товара</label><br>
-    <input type="text" id= "myplugin_new_field" name="jekag_name" value="<?php echo $image ? $image[0] : ''; ?>"  /><br>
+    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
     <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
-    <textarea rows="4" name="jekag_description"><?php echo $image ? $image[0] : ''; ?></textarea><br>
+    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
     <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="jekag_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
+    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
     <td><select name="jekag_currency">
-            <option value="<?php echo $image ? $image[0] : ''; ?>" selected>руб.</option>
+            <option value="<?php echo $image ? $image[1] : ''; ?>" selected>руб.</option>
             <option value="1">$</option>
             <option value="2">грн.</option>
           </select></td></tr></table></p>
@@ -103,6 +105,12 @@ function iumb_meta_save($post_id) {
 
     if(isset($_POST['iumb'])) {
         update_post_meta($post_id, 'iumb', $_POST['iumb']);
+    }
+    if(isset($_POST['yaproduct_name'])) {
+        update_post_meta($post_id, 'yaproduct_name', $_POST['yaproduct_name']);
+    }
+    if(isset($_POST['yaproduct_description'])) {
+        update_post_meta($post_id, 'yaproduct_description', $_POST['yaproduct_description']);
     }
 }
 
