@@ -10,7 +10,7 @@ function add_iumb_metabox($post_type) {
             'Схема Yandex Product',
             'iumb_meta_callback',
             $post_type,
-            'normal',
+            'side',
             'low'
         );
     }
