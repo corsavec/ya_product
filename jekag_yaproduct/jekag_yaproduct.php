@@ -32,6 +32,7 @@ function iumb_meta_callback($post) {
     $id = get_post_meta($post->ID, 'iumb', true);
     $desc = get_post_meta($post->ID, 'yaproduct_description', true);
     $name = get_post_meta($post->ID, 'yaproduct_name', true);
+    $price = get_post_meta($post->ID, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
     ?>
 
@@ -44,9 +45,9 @@ function iumb_meta_callback($post) {
     <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
     <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
+    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
     <td><select name="yaproduc_currency">
-            <option value="<?php echo $image ? $image[1] : ''; ?>" selected>руб.</option>
+            <option value="<?php echo $price; ?>" selected>руб.</option>
             <option value="1">$</option>
             <option value="2">грн.</option>
           </select></td></tr></table></p>
@@ -65,9 +66,9 @@ function iumb_meta_callback($post) {
     <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
     <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
+    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
     <td><select name="jekag_currency">
-            <option value="<?php echo $image ? $image[1] : ''; ?>" selected>руб.</option>
+            <option value="<?php echo $price; ?>" selected>руб.</option>
             <option value="1">$</option>
             <option value="2">грн.</option>
           </select></td></tr></table></p>
@@ -111,6 +112,9 @@ function iumb_meta_save($post_id) {
     }
     if(isset($_POST['yaproduct_description'])) {
         update_post_meta($post_id, 'yaproduct_description', $_POST['yaproduct_description']);
+    }
+    if(isset($_POST['yaproduct_price'])) {
+        update_post_meta($post_id, 'yaproduct_price', $_POST['yaproduct_price']);
     }
 }
 
