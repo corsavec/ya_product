@@ -36,12 +36,12 @@ function iumb_meta_callback($post) {
     <?php if($id == ''){ ?>
 
 
-        // Поля формы для введения данных
-    <p><label for="myplugin_new_field">' . __("Название услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+
+    <p><label for="myplugin_new_field">Название услуги\товара</label><br>
     <input type="text" id= "myplugin_new_field" name="jekag_name" value="<?php echo $image ? $image[0] : ''; ?>"  /><br>
-    <p></p><label for="myplugin_new_field">' . __("Описание услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+    <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="jekag_description"><?php echo $image ? $image[0] : ''; ?></textarea><br>
-    <p></p><label for="myplugin_new_field">' . __("Цена услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+    <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
     <table><tr><td><input type="text" id= "myplugin_new_field" name="jekag_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
     <td><select name="jekag_currency">
             <option value="<?php echo $image ? $image[0] : ''; ?>" selected>руб.</option>
@@ -57,12 +57,12 @@ function iumb_meta_callback($post) {
     <?php } else { ?>
 
 
-        // Поля формы для введения данных
-    <p><label for="myplugin_new_field">' . __("Название услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+
+    <p><label for="myplugin_new_field">Название услуги\товара</label><br>
     <input type="text" id= "myplugin_new_field" name="jekag_name" value="<?php echo $image ? $image[0] : ''; ?>"  /><br>
-    <p></p><label for="myplugin_new_field">' . __("Описание услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+    <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="jekag_description"><?php echo $image ? $image[0] : ''; ?></textarea><br>
-    <p></p><label for="myplugin_new_field">' . __("Цена услуги\товара", 'myplugin_textdomain' ) . '</label><br>
+    <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
     <table><tr><td><input type="text" id= "myplugin_new_field" name="jekag_price" value="<?php echo $image ? $image[0] : ''; ?>" size=10 /></td>
     <td><select name="jekag_currency">
             <option value="<?php echo $image ? $image[0] : ''; ?>" selected>руб.</option>
