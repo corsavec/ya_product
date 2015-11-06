@@ -41,5 +41,4 @@ if ( $typenow == 'post' ) {
 
 
 
-
 ?>

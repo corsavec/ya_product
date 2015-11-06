@@ -90,5 +90,38 @@ add_action('save_post', 'yaproduct_meta_save');
 add_action( 'admin_head', 'register_plugin_styles' );
 //JS
 add_action('admin_footer', 'my_scripts_method');
+//активация обработки шорткода
+if (function_exists ('add_shortcode') ) {
+    add_shortcode('ljuser', 'user_shortcode');
+}
+
+
+//обработка шорткода
+function user_shortcode ($atts, $content = null)
+{
+    global $post;
+
+    wp_nonce_field( basename(__FILE__), 'iumb_meta_nonce' );
+    $id = $post->ID;
+    $desc = get_post_meta($post->ID, 'yaproduct_description', true);
+    $name = get_post_meta($post->ID, 'yaproduct_name', true);
+    $price = get_post_meta($post->ID, 'yaproduct_price', true);
+    $image = wp_get_attachment_image_src(get_post_meta($post->ID, 'iumb', true), 'full-size');
+    $currency = get_post_meta($post->ID, 'yaproduct_currency', true);
+
+    return '<div itemscope itemtype="http://schema.org/Product">
+    <div itemprop="name"><h1>'.$name.'</h1></div>
+    <a itemprop="image" href="'.$image[0].'">
+    <img src="'.$image[0].'" title="'.$name.'">
+    </a>
+
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <div>'.$price.' '.$currency.'</div>
+    <meta itemprop="price" content="'.$price.'">
+    <meta itemprop="priceCurrency" content="'.$currency.'">
+    </div>
+    <div itemprop="description">'.$desc.'></div>
+    </div>';
+}
 
 ?>
