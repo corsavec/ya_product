@@ -87,11 +87,11 @@ function user_shortcode ($atts, $content = null, $yaprod_basename)
 
     wp_nonce_field( $yaprod_basename, 'iumb_meta_nonce' );
     $id = $post->ID;
-    $desc = get_post_meta($post->ID, 'yaproduct_description', true);
-    $name = get_post_meta($post->ID, 'yaproduct_name', true);
-    $price = get_post_meta($post->ID, 'yaproduct_price', true);
-    $image = wp_get_attachment_image_src(get_post_meta($post->ID, 'iumb', true), 'full-size');
-    $currency = get_post_meta($post->ID, 'yaproduct_currency', true);
+    $desc = get_post_meta($id, 'yaproduct_description', true);
+    $name = get_post_meta($id, 'yaproduct_name', true);
+    $price = get_post_meta($id, 'yaproduct_price', true);
+    $image = wp_get_attachment_image_src(get_post_meta($id, 'iumb', true), 'full-size');
+    $currency = get_post_meta($id, 'yaproduct_currency', true);
 
     return '<div itemscope itemtype="http://schema.org/Product">
     <div itemprop="name"><h1>'.$name.'</h1></div>
