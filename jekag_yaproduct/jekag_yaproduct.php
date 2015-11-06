@@ -9,7 +9,7 @@ Version: 1.0
 Author: Гресько Евгений
 Author URI: http://vk.com/g.jeka
 */
-include('functions.php');
+require('functions.php');
 
 add_action('add_meta_boxes', 'add_iumb_metabox');
 
@@ -59,7 +59,6 @@ function iumb_meta_callback($post) {
 
 <?php }
 
-
 function yaproduct_meta_save($post_id) {
     if (!isset($_POST['iumb_meta_nonce']) || !wp_verify_nonce($_POST['iumb_meta_nonce'], basename(__FILE__))) return;
 
@@ -84,13 +83,12 @@ function yaproduct_meta_save($post_id) {
     }
 }
 
-add_action('save_post', 'yaproduct_meta_save');
 
+//при сохранении поста
+add_action('save_post', 'yaproduct_meta_save');
 // CSS
 add_action( 'admin_head', 'register_plugin_styles' );
-
-
-
-add_action('admin_footer', 'iumb_js');
+//JS
+add_action('admin_footer', 'my_scripts_method');
 
 ?>
