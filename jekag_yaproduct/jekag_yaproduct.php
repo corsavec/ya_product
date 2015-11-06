@@ -113,45 +113,16 @@ add_action('save_post', 'yaproduct_meta_save');
 
 
 // CSS
-function theme_name_scripts() {
-    wp_enqueue_style( 'style-name', get_stylesheet_uri() );
-    wp_enqueue_script( 'script-name', get_template_directory_uri() . '/js/yaproduct.js', array(), '1.0.0', true );
+// регистрируем стили
+add_action( 'admin_head', 'register_plugin_styles' );
+// регистрируем файл стилей и добавляем его в очередь
+function register_plugin_styles() {
+global $typenow;
+if ( 'post.php' || 'post-new.php' || $typenow == 'post' ) {
+    wp_register_style('yaproduct', plugins_url('jekag_yaproduct/yaproduct.css'));
+    wp_enqueue_style('yaproduct');
 }
-add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
-
-function iumb_css(){
-    global $typenow;
-    if ( 'post.php' || 'post-new.php' || $typenow == 'post' ) {
-        ?>
-
-        <style type="text/css">
-            #image-uploader-meta-box-list:after{
-                display:block;
-                content:'';
-                clear:both;
-            }
-            #image-uploader-meta-box-list li {
-                float: left;
-                width: 150px;
-                height:auto;
-                text-align: center;
-                margin: 10px 10px 10px 0;
-            }
-            input.iumb{
-                width:50%;
-            }
-            #image-uploader-meta-box-list li img{
-                max-width:150px;
-            }
-            a.iumb-add.none, a.change-image.none, a.remove-image.none{
-                display:none;
-                visibility:hidden;
-            }
-        </style>
-
-    <?php }
 }
-add_action('admin_head', 'iumb_css');
 
 // JS
 function iumb_js(){

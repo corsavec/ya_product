@@ -1,0 +1,23 @@
+
+#image-uploader-meta-box-list:after{
+    display:block;
+    content:'';
+    clear:both;
+}
+#image-uploader-meta-box-list li {
+    float: left;
+    width: 150px;
+    height:auto;
+    text-align: center;
+    margin: 10px 10px 10px 0;
+}
+input.iumb{
+    width:50%;
+}
+#image-uploader-meta-box-list li img{
+    max-width:150px;
+}
+a.iumb-add.none, a.change-image.none, a.remove-image.none{
+    display:none;
+    visibility:hidden;
+}
