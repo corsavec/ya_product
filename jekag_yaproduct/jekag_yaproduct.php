@@ -34,61 +34,53 @@ function iumb_meta_callback($post) {
     $name = get_post_meta($post->ID, 'yaproduct_name', true);
     $price = get_post_meta($post->ID, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
+    $currency = get_post_meta($post->ID, 'yaproduct_currency', true);
 
-    if($id == ''){ ?>
-
-
-
-    <p><label for="myplugin_new_field">Название услуги\товара</label><br>
-    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
+?>
+<p><label for="myplugin_new_field">Название услуги\товара</label><br>
+    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  />
     </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
-    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
-    </p><p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
-    <td><select name="yaproduc_currency">
-            <option value="<?php echo $price; ?>" selected>руб.</option>
-            <option value="1">$</option>
-            <option value="2">грн.</option>
-          </select></td></tr></table></p>
+    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea>
+</p><p><label for="myplugin_new_field">Цена услуги\товара</label>
+</p><p><table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 />
+        </td><td><input type="text" id= "myplugin_new_field" name="yaproduct_currency" value="<?php echo $currency; ?>" size=5 /></td></tr></table></p>
+<ul id="image-uploader-meta-box-list">
+<?php if ($id) : ?>
+
+    <input type="hidden" name="iumb" value="<?php echo $id; ?>">
+    <li>
+        <img class="image-preview" src="<?php echo $image ? $image[0] : ''; ?>">
+    </li><br>
+
+
+<?php endif; ?>
+
+
+<?    if($id == ''){ ?>
 
 
 
-        <input class="iumb" type="text" name="_iumb" value="<?php echo $image ? $image[0] : ''; ?>"> <a class="iumb-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Upload</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Change</a> <a class="remove-image button none" href="#">Remove</a> <br />
-        <p class="description">Select an image</p>
+
+
+
+<p class="description">Выбор изображения</p>
+         <a class="iumb-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button none" href="#">Убрать</a> <br />
+
 
     <?php } else { ?>
 
 
 
-    <p><label for="myplugin_new_field">Название услуги\товара</label><br>
-    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
-    </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
-    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
-    </p><p><label for="myplugin_new_field">Цена услуги\товара</label><br>
-    <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
-    <td><select name="jekag_currency">
-            <option value="<?php echo $price; ?>" selected>руб.</option>
-            <option value="1">$</option>
-            <option value="2">грн.</option>
-          </select></td></tr></table></p>
 
 
+<p class="description">Выбор изображения</p>
+         <a class="iumb-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button" href="#">Убрать</a> <br />
 
-        <input class="iumb" type="text" name="_iumb" value="<?php echo $image ? $image[0] : ''; ?>"> <a class="iumb-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Upload</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Change</a> <a class="remove-image button" href="#">Remove</a> <br />
-        <p class="description">Select an image</p>
 
     <?php } ?>
 
-    <ul id="image-uploader-meta-box-list">
-        <?php if ($id) : ?>
+</ul>
 
-		  <input type="hidden" name="iumb" value="<?php echo $id; ?>">
-          <li>
-            <img class="image-preview" src="<?php echo $image[0]; ?>">
-          </li>
-
-        <?php endif; ?>
-        </ul>
 
 <?php }
 
@@ -110,6 +102,9 @@ function iumb_meta_save($post_id) {
     }
     if(isset($_POST['yaproduct_price'])) {
         update_post_meta($post_id, 'yaproduct_price', $_POST['yaproduct_price']);
+    }
+    if(isset($_POST['yaproduct_currency'])) {
+        update_post_meta($post_id, 'yaproduct_currency', $_POST['yaproduct_currency']);
     }
 }
 
@@ -232,11 +227,13 @@ function iumb_js(){
 
                         that.parent().find('input:hidden').attr('value', attachment.id);
                         that.parent().find('img.image-preview').attr('src', attachment.sizes.thumbnail.url);
+
                     });
 
                     file_frame.open();
 
                 });
+
 
                 function resetIndex() {
                     $('#image-uploader-meta-box-list li').each(function(i) {
