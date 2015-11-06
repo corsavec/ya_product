@@ -34,17 +34,16 @@ function iumb_meta_callback($post) {
     $name = get_post_meta($post->ID, 'yaproduct_name', true);
     $price = get_post_meta($post->ID, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
-    ?>
 
-    <?php if($id == ''){ ?>
+    if($id == ''){ ?>
 
 
 
     <p><label for="myplugin_new_field">Название услуги\товара</label><br>
     <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
-    <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
+    </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
-    <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
+    </p><p><label for="myplugin_new_field">Цена услуги\товара</label><br>
     <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
     <td><select name="yaproduc_currency">
             <option value="<?php echo $price; ?>" selected>руб.</option>
@@ -63,9 +62,9 @@ function iumb_meta_callback($post) {
 
     <p><label for="myplugin_new_field">Название услуги\товара</label><br>
     <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  /><br>
-    <p></p><label for="myplugin_new_field">Описание услуги\товара</label><br>
+    </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
     <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea><br>
-    <p></p><label for="myplugin_new_field">Цена услуги\товара</label><br>
+    </p><p><label for="myplugin_new_field">Цена услуги\товара</label><br>
     <table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 /></td>
     <td><select name="jekag_currency">
             <option value="<?php echo $price; ?>" selected>руб.</option>
@@ -83,17 +82,13 @@ function iumb_meta_callback($post) {
     <ul id="image-uploader-meta-box-list">
         <?php if ($id) : ?>
 
-
-
-
-
-            <input type="hidden" name="iumb" value="<?php echo $id; ?>">
-            <li>
-                <img class="image-preview" src="<?php echo $image[0]; ?>">
-            </li>
+		  <input type="hidden" name="iumb" value="<?php echo $id; ?>">
+          <li>
+            <img class="image-preview" src="<?php echo $image[0]; ?>">
+          </li>
 
         <?php endif; ?>
-    </ul>
+        </ul>
 
 <?php }
 
