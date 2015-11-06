@@ -18,13 +18,14 @@ function add_iumb_metabox($post_type) {
 
 //прорисовка метабокса
 function iumb_meta_callback($post) {
+    $id = $post->ID;
     wp_nonce_field( 'jekag_yaproduct.php', 'iumb_meta_nonce' );
-    $id = get_post_meta($post->ID, 'iumb', true);
-    $desc = get_post_meta($post->ID, 'yaproduct_description', true);
-    $name = get_post_meta($post->ID, 'yaproduct_name', true);
-    $price = get_post_meta($post->ID, 'yaproduct_price', true);
+    $id = get_post_meta($id, 'iumb', true);
+    $desc = get_post_meta($id, 'yaproduct_description', true);
+    $name = get_post_meta($id, 'yaproduct_name', true);
+    $price = get_post_meta($id, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
-    $currency = get_post_meta($post->ID, 'yaproduct_currency', true);
+    $currency = get_post_meta($id, 'yaproduct_currency', true);
 
 ?>
 <p><label for="myplugin_new_field">Название услуги\товара</label><br>
@@ -56,7 +57,9 @@ function iumb_meta_callback($post) {
 
     <?php } ?>
 </ul>
-
+<p>Скопируйте шорткод который можно вставить в текст страницы<br>
+[yaprod]<?=$id?>[/yaprod]
+</p>
 <?php }
 
 // регистрируем файл стилей и добавляем его в очередь
@@ -81,7 +84,7 @@ if ( $typenow == 'post' ) {
 
 
 //обработка шорткода
-function user_shortcode ($atts, $content = null, $yaprod_basename)
+function user_shortcode ($atts, $content, $yaprod_basename)
 {
     global $post;
 
@@ -93,7 +96,7 @@ function user_shortcode ($atts, $content = null, $yaprod_basename)
     $image = wp_get_attachment_image_src(get_post_meta($id, 'iumb', true), 'full-size');
     $currency = get_post_meta($id, 'yaproduct_currency', true);
 
-    return '<div itemscope itemtype="http://schema.org/Product">
+    return $content.'<div itemscope itemtype="http://schema.org/Product">
     <div itemprop="name"><h1>'.$name.'</h1></div>
     <a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>
 
