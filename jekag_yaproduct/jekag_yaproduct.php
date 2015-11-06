@@ -10,22 +10,9 @@ Author: Гресько Евгений
 Author URI: http://vk.com/g.jeka
 */
 include('functions.php');
-// Create meta box
-function add_iumb_metabox($post_type) {
-    $types = array('post');
 
-    if (in_array($post_type, $types)) {
-        add_meta_box(
-            'image-uploader-meta-box',
-            'Схема Yandex Product',
-            'iumb_meta_callback',
-            $post_type,
-            'normal',
-            'low'
-        );
-    }
-}
 add_action('add_meta_boxes', 'add_iumb_metabox');
+
 
 function iumb_meta_callback($post) {
     wp_nonce_field( basename(__FILE__), 'iumb_meta_nonce' );
@@ -38,16 +25,16 @@ function iumb_meta_callback($post) {
 
 ?>
 <p><label for="myplugin_new_field">Название услуги\товара</label><br>
-    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?php echo $name; ?>"  />
+    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?=$name;?>"  />
     </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
-    <textarea rows="4" name="yaproduct_description"><?php echo $desc; ?></textarea>
+    <textarea rows="4" name="yaproduct_description"><?=$desc;?></textarea>
 </p><p><label for="myplugin_new_field">Цена услуги\товара</label>
-</p><p><table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?php echo $price; ?>" size=10 />
-        </td><td><input type="text" id= "myplugin_new_field" name="yaproduct_currency" value="<?php echo $currency; ?>" size=5 /></td></tr></table></p>
+</p><p><table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?=$price;?>" size=10 />
+        </td><td><input type="text" id= "myplugin_new_field" name="yaproduct_currency" value="<?=$currency;?>" size=5 /></td></tr></table></p>
 <ul id="image-uploader-meta-box-list">
 <?php if ($id) : ?>
 
-    <input type="hidden" name="iumb" value="<?php echo $id; ?>">
+    <input type="hidden" name="iumb" value="<?=$id;?>">
     <li>
         <img class="image-preview" src="<?php echo $image ? $image[0] : ''; ?>">
     </li><br>
@@ -58,31 +45,20 @@ function iumb_meta_callback($post) {
 
 <?    if($id == ''){ ?>
 
-
-
-
-
-
 <p class="description">Выбор изображения</p>
          <a class="iumb-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button none" href="#">Убрать</a> <br />
 
-
     <?php } else { ?>
-
-
-
-
 
 <p class="description">Выбор изображения</p>
          <a class="iumb-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button" href="#">Убрать</a> <br />
-
 
     <?php } ?>
 
 </ul>
 
-
 <?php }
+
 
 function yaproduct_meta_save($post_id) {
     if (!isset($_POST['iumb_meta_nonce']) || !wp_verify_nonce($_POST['iumb_meta_nonce'], basename(__FILE__))) return;
@@ -110,147 +86,11 @@ function yaproduct_meta_save($post_id) {
 
 add_action('save_post', 'yaproduct_meta_save');
 
-
-
 // CSS
-// регистрируем стили
 add_action( 'admin_head', 'register_plugin_styles' );
-// регистрируем файл стилей и добавляем его в очередь
-function register_plugin_styles() {
-global $typenow;
-if ( 'post.php' || 'post-new.php' || $typenow == 'post' ) {
-    wp_register_style('yaproduct', plugins_url('jekag_yaproduct/yaproduct.css'));
-    wp_enqueue_style('yaproduct');
-}
-}
-
-// JS
-function iumb_js(){
-    global $typenow;
-    if ( $typenow == 'post' ) {
-        ?>
-
-        <script type="text/javascript">
-
-            jQuery(function($) {
-
-                var file_frame;
-
-                $(document).on('click', '#image-uploader-meta-box a.iumb-add', function(e) {
-
-                    e.preventDefault();
-
-                    if (file_frame) file_frame.close();
-
-                    file_frame = wp.media.frames.file_frame = wp.media({
-                        title: $(this).data('uploader-title'),
-                        // Tell the modal to show only images.
-                        library: {
-                            type: 'image'
-                        },
-                        button: {
-                            text: $(this).data('uploader-button-text'),
-                        },
-                        multiple: false
-                    });
-
-                    file_frame.on('select', function() {
-                        var listIndex = $('#image-uploader-meta-box-list li').index($('#image-uploader-meta-box-list li:last')),
-                            selection = file_frame.state().get('selection');
-
-                        selection.map(function(attachment) {
-                            attachment = attachment.toJSON(),
-
-                                index      = listIndex;
-
-                            $('#image-uploader-meta-box-list').append('<li><input type="hidden" name="iumb" value="' + attachment.id + '"><img class="image-preview" src="' + attachment.sizes.thumbnail.url + '"></li>');
-
-                            $('input[name="_iumb"]').val(attachment.url);
-
-                            $('#image-uploader-meta-box a.iumb-add').addClass('none');
-                            $('a.change-image').removeClass('none').show();
-                            $('a.remove-image').removeClass('none').show();
-
-                        });
-                    });
-
-                    makeSortable();
-
-                    file_frame.open();
-
-                });
-
-                $(document).on('click', '#image-uploader-meta-box a.change-image', function(e) {
-
-                    e.preventDefault();
-
-                    var that = $(this);
-
-                    if (file_frame) file_frame.close();
-
-                    file_frame = wp.media.frames.file_frame = wp.media({
-                        title: $(this).data('uploader-title'),
-                        button: {
-                            text: $(this).data('uploader-button-text'),
-                        },
-                        multiple: false
-                    });
-
-                    file_frame.on( 'select', function() {
-                        attachment = file_frame.state().get('selection').first().toJSON();
-
-                        that.parent().find('input:hidden').attr('value', attachment.id);
-                        that.parent().find('img.image-preview').attr('src', attachment.sizes.thumbnail.url);
-
-                    });
-
-                    file_frame.open();
-
-                });
 
 
-                function resetIndex() {
-                    $('#image-uploader-meta-box-list li').each(function(i) {
-                        $(this).find('input:hidden').attr('name', 'iumb');
-                    });
-                }
 
-                function makeSortable() {
-                    $('#image-uploader-meta-box-list').sortable({
-                        opacity: 0.6,
-                        stop: function() {
-                            resetIndex();
-                        }
-                    });
-                }
-
-                $(document).on('click', '#image-uploader-meta-box a.remove-image', function(e) {
-
-
-                    $('#image-uploader-meta-box a.iumb-add').removeClass('none');
-                    $('a.change-image').hide();
-                    $(this).hide();
-
-                    $('input[name="iumb"]').val('');
-                    $('input[name="_iumb"]').val('');
-
-                    $('#image-uploader-meta-box-list li').animate({ opacity: 0 }, 200, function() {
-                        $(this).remove();
-                        resetIndex();
-                    });
-
-                    e.preventDefault();
-
-                });
-
-                makeSortable();
-
-            });
-
-        </script>
-
-    <?php }
-}
 add_action('admin_footer', 'iumb_js');
 
 ?>
