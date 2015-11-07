@@ -38,7 +38,7 @@ class Foo_Widget extends WP_Widget {
         $desc = get_post_meta($id, 'yaproduct_description', true);
         $name = get_post_meta($id, 'yaproduct_name', true);
         $price = get_post_meta($id, 'yaproduct_price', true);
-        $image = wp_get_attachment_image_src(get_post_meta($id, 'iumb', true), 'full-size');
+        $image = wp_get_attachment_image_src(get_post_meta($id, 'yaprod', true), 'full-size');
         $currency = get_post_meta($id, 'yaproduct_currency', true);
 
         echo '<div itemscope itemtype="http://schema.org/Product">
@@ -50,7 +50,7 @@ class Foo_Widget extends WP_Widget {
     <meta itemprop="price" content="'.$price.'">
     <meta itemprop="priceCurrency" content="'.$currency.'">
     </div>
-    <div itemprop="description">'.$desc.'></div>
+    <div itemprop="description">'.$desc.'</div>
     </div>';}
         echo $args['after_widget'];
     }

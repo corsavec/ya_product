@@ -2,7 +2,7 @@ jQuery(function($) {
 
     var file_frame;
 
-    $(document).on('click', '#image-uploader-meta-box a.iumb-add', function(e) {
+    $(document).on('click', '#image-uploader-meta-box a.yaprod-add', function(e) {
 
         e.preventDefault();
 
@@ -29,11 +29,11 @@ jQuery(function($) {
 
                     index      = listIndex;
 
-                $('#image-uploader-meta-box-list').append('<li><input type="hidden" name="iumb" value="' + attachment.id + '"><img class="image-preview" src="' + attachment.sizes.thumbnail.url + '"></li>');
+                $('#image-uploader-meta-box-list').append('<li><input type="hidden" name="yaprod" value="' + attachment.id + '"><img class="image-preview" src="' + attachment.sizes.thumbnail.url + '"></li>');
 
-                $('input[name="_iumb"]').val(attachment.url);
+                $('input[name="_yaprod"]').val(attachment.url);
 
-                $('#image-uploader-meta-box a.iumb-add').addClass('none');
+                $('#image-uploader-meta-box a.yaprod-add').addClass('none');
                 $('a.change-image').removeClass('none').show();
                 $('a.remove-image').removeClass('none').show();
 
@@ -77,7 +77,7 @@ jQuery(function($) {
 
     function resetIndex() {
         $('#image-uploader-meta-box-list li').each(function(i) {
-            $(this).find('input:hidden').attr('name', 'iumb');
+            $(this).find('input:hidden').attr('name', 'yaprod');
         });
     }
 
@@ -93,12 +93,12 @@ jQuery(function($) {
     $(document).on('click', '#image-uploader-meta-box a.remove-image', function(e) {
 
 
-        $('#image-uploader-meta-box a.iumb-add').removeClass('none');
+        $('#image-uploader-meta-box a.yaprod-add').removeClass('none');
         $('a.change-image').hide();
         $(this).hide();
 
-        $('input[name="iumb"]').val('');
-        $('input[name="_iumb"]').val('');
+        $('input[name="yaprod"]').val('');
+        $('input[name="_yaprod"]').val('');
 
         $('#image-uploader-meta-box-list li').animate({ opacity: 0 }, 200, function() {
             $(this).remove();

@@ -12,7 +12,7 @@ Author URI: http://vk.com/g.jeka
 require('functions.php');
 require('widget.php');
 
-add_action('add_meta_boxes', 'add_iumb_metabox');
+add_action('add_meta_boxes', 'add_yaprod_metabox');
 
 
 //при сохранении поста

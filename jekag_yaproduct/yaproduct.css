@@ -11,13 +11,13 @@
     text-align: center;
     margin: 10px 10px 10px 0;
 }
-input.iumb{
+input.yaprod{
     width:50%;
 }
 #image-uploader-meta-box-list li img{
     max-width:150px;
 }
-a.iumb-add.none, a.change-image.none, a.remove-image.none{
+a.yaprod-add.none, a.change-image.none, a.remove-image.none{
     display:none;
     visibility:hidden;
 }

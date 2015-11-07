@@ -1,31 +1,31 @@
 <?php
 
 // Create meta box
-function add_iumb_metabox($post_type) {
+function add_yaprod_metabox($post_type) {
     $types = array('post');
 
     if (in_array($post_type, $types)) {
         add_meta_box(
             'image-uploader-meta-box',
             'Схема Yandex Product',
-            'iumb_meta_callback',
+            'yaprod_meta_callback',
             $post_type,
             'side',
-            'low'
+            'default'
         );
     }
 }
 
 //прорисовка метабокса
-function iumb_meta_callback($post) {
-    $id = $post->ID;
-    wp_nonce_field( 'jekag_yaproduct.php', 'iumb_meta_nonce' );
-    $id = get_post_meta($id, 'iumb', true);
-    $desc = get_post_meta($id, 'yaproduct_description', true);
-    $name = get_post_meta($id, 'yaproduct_name', true);
-    $price = get_post_meta($id, 'yaproduct_price', true);
+function yaprod_meta_callback($post) {
+    $id1 = $post->ID;
+    wp_nonce_field( 'jekag_yaproduct.php', 'yaprod_meta_nonce' );
+    $id = get_post_meta($id1, 'yaprod', true);
+    $desc = get_post_meta($id1, 'yaproduct_description', true);
+    $name = get_post_meta($id1, 'yaproduct_name', true);
+    $price = get_post_meta($id1, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
-    $currency = get_post_meta($id, 'yaproduct_currency', true);
+    $currency = get_post_meta($id1, 'yaproduct_currency', true);
 
 ?>
 <p><label for="myplugin_new_field">Название услуги\товара</label><br>
@@ -38,7 +38,7 @@ function iumb_meta_callback($post) {
 <ul id="image-uploader-meta-box-list">
 <?php if ($id) : ?>
 
-    <input type="hidden" name="iumb" value="<?=$id;?>">
+    <input type="hidden" name="yaprod" value="<?=$id;?>">
     <li>
         <img class="image-preview" src="<?php echo $image ? $image[0] : ''; ?>">
     </li><br>
@@ -48,12 +48,12 @@ function iumb_meta_callback($post) {
 <?    if($id == ''){ ?>
 
 <p class="description">Выбор изображения</p>
-         <a class="iumb-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button none" href="#">Убрать</a> <br />
+         <a class="yaprod-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button none" href="#">Убрать</a> <br />
 
     <?php } else { ?>
 
 <p class="description">Выбор изображения</p>
-         <a class="iumb-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button" href="#">Убрать</a> <br />
+         <a class="yaprod-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button" href="#">Убрать</a> <br />
 
     <?php } ?>
 </ul>
@@ -88,15 +88,16 @@ function user_shortcode ($atts, $content, $yaprod_basename)
 {
     global $post;
 
-    wp_nonce_field( $yaprod_basename, 'iumb_meta_nonce' );
-    $id = $post->ID;
+    wp_nonce_field( $yaprod_basename, 'yaprod_meta_nonce' );
+
+    if (empty($content)) $id = $post->ID; else $id=$content;
     $desc = get_post_meta($id, 'yaproduct_description', true);
     $name = get_post_meta($id, 'yaproduct_name', true);
     $price = get_post_meta($id, 'yaproduct_price', true);
-    $image = wp_get_attachment_image_src(get_post_meta($id, 'iumb', true), 'full-size');
+    $image = wp_get_attachment_image_src(get_post_meta($id, 'yaprod', true), 'full-size');
     $currency = get_post_meta($id, 'yaproduct_currency', true);
 
-    return $content.'<div itemscope itemtype="http://schema.org/Product">
+    return $id.'<div itemscope itemtype="http://schema.org/Product">
     <div itemprop="name"><h1>'.$name.'</h1></div>
     <a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>
 
@@ -105,20 +106,20 @@ function user_shortcode ($atts, $content, $yaprod_basename)
     <meta itemprop="price" content="'.$price.'">
     <meta itemprop="priceCurrency" content="'.$currency.'">
     </div>
-    <div itemprop="description">'.$desc.'></div>
+    <div itemprop="description">'.$desc.'</div>
     </div>';
 }
 
 //сохранение данных метабокса
 function yaproduct_meta_save($post_id) {
-    if (!isset($_POST['iumb_meta_nonce']) || !wp_verify_nonce($_POST['iumb_meta_nonce'], 'jekag_yaproduct.php')) return;
+    if (!isset($_POST['yaprod_meta_nonce']) || !wp_verify_nonce($_POST['yaprod_meta_nonce'], 'jekag_yaproduct.php')) return;
 
     if (!current_user_can('edit_post', $post_id)) return $post_id;
 
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-    if(isset($_POST['iumb'])) {
-        update_post_meta($post_id, 'iumb', $_POST['iumb']);
+    if(isset($_POST['yaprod'])) {
+        update_post_meta($post_id, 'yaprod', $_POST['yaprod']);
     }
     if(isset($_POST['yaproduct_name'])) {
         update_post_meta($post_id, 'yaproduct_name', $_POST['yaproduct_name']);
