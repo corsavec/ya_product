@@ -57,8 +57,8 @@ function yaprod_meta_callback($post) {
 
     <?php } ?>
 </ul>
-<p>Скопируйте шорткод который можно вставить в текст страницы<br>
-[yaprod]<?=$id?>[/yaprod]
+<p>Скопируйте шорткод который можно вставить в текст страницы:<br>
+[yaprod]<?=$id1?>[/yaprod]
 </p>
 <?php }
 
@@ -89,15 +89,15 @@ function user_shortcode ($atts, $content, $yaprod_basename)
     global $post;
 
     wp_nonce_field( $yaprod_basename, 'yaprod_meta_nonce' );
-
-    if (empty($content)) $id = $post->ID; else $id=$content;
+    $content=$content*1;
+    if ((empty($content))) $id = $post->ID; else $id=$content;
     $desc = get_post_meta($id, 'yaproduct_description', true);
     $name = get_post_meta($id, 'yaproduct_name', true);
     $price = get_post_meta($id, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src(get_post_meta($id, 'yaprod', true), 'full-size');
     $currency = get_post_meta($id, 'yaproduct_currency', true);
 
-    return $id.'<div itemscope itemtype="http://schema.org/Product">
+    return '<div itemscope itemtype="http://schema.org/Product">
     <div itemprop="name"><h1>'.$name.'</h1></div>
     <a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>
 
