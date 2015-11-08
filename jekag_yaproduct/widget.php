@@ -23,10 +23,9 @@ class yaprod_Widget extends WP_Widget {
             $currency = get_post_meta($id, 'yaproduct_currency', true);
 
             echo '<div itemscope itemtype="http://schema.org/Product">
-                <div itemprop="name"><h1>'.$name.'</h1></div>
-                <a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>
-
-                <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                <div itemprop="name"><h1>'.$name.'</h1></div>';
+            if (!empty($image[0])) echo '<a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>';
+            echo '<div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                 <div>'.$price.' '.$currency.'</div>
                 <meta itemprop="price" content="'.$price.'">
                 <meta itemprop="priceCurrency" content="'.$currency.'">

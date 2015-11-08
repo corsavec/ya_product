@@ -92,18 +92,17 @@ function user_shortcode ($atts, $content, $yaprod_basename)
     $price = get_post_meta($id, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src(get_post_meta($id, 'yaprod', true), 'full-size');
     $currency = get_post_meta($id, 'yaproduct_currency', true);
-
-    return '<div itemscope itemtype="http://schema.org/Product">
-    <div itemprop="name"><h1>'.$name.'</h1></div>
-    <a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>
-
-    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    $text_to_return = '<div itemscope itemtype="http://schema.org/Product">
+        <div itemprop="name"><h1>'.$name.'</h1></div>';
+    if (!empty($image[0])) $text_to_return = $text_to_return.'<a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>';
+    $text_to_return = $text_to_return.'<div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
     <div>'.$price.' '.$currency.'</div>
     <meta itemprop="price" content="'.$price.'">
     <meta itemprop="priceCurrency" content="'.$currency.'">
     </div>
     <div itemprop="description">'.$desc.'</div>
     </div>';
+    return $text_to_return;
 }
 
 //сохранение данных метабокса
