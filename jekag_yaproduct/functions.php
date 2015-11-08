@@ -135,4 +135,13 @@ function yaproduct_meta_save($post_id) {
     }
 }
 
+//удаление метаданных удаленного поста
+function del_jekag_meta() {
+    delete_post_meta_by_key ( 'yaprod');
+    delete_post_meta_by_key ( 'yaproduct_name');
+    delete_post_meta_by_key ( 'yaproduct_description');
+    delete_post_meta_by_key ( 'yaproduct_price');
+    delete_post_meta_by_key ( 'yaproduct_currency');
+}
+
 ?>

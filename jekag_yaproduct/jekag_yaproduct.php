@@ -24,7 +24,7 @@ add_action('admin_footer', 'my_scripts_method');
 //активация обработки шорткода
 add_shortcode('yaprod', 'user_shortcode', basename(__FILE__));
 
-register_uninstall_hook (__FILE__,'jekag_plugin_uninstall' ); //при удалении плагина удаляем таблицу
-add_action('before_delete_post', 'del_jekag_row'); //при удалении поста удаляем строку продукта
+register_uninstall_hook (__FILE__,'del_jekag_meta' ); //при удалении плагина удаляем таблицу
+//add_action('before_delete_post', 'del_jekag_meta'); //при удалении поста удаляем строку продукта
 
 ?>
