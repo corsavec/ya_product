@@ -1,88 +1,142 @@
 <?php
-function del_jekag_row ($post_id) {
-    global $wpdb;
-    $table_name = $wpdb->prefix.'jekag_yaproduct';
-    $wpdb->delete( $table_name, array( 'post_id' => $post_id ) );
+//Создание метабокса
+function add_yaprod_metabox($post_type) {
+    $types = array('post');
+
+    if (in_array($post_type, $types)) {
+        add_meta_box(
+            'image-uploader-meta-box',
+            'Схема Yandex Product',
+            'yaprod_meta_callback',
+            $post_type,
+            'side',
+            'default'
+        );
+    }
 }
 
+//прорисовка метабокса
+function yaprod_meta_callback($post) {
+    $id1 = $post->ID;
+    wp_nonce_field( 'jekag_yaproduct.php', 'yaprod_meta_nonce' );
+    $id = get_post_meta($id1, 'yaprod', true);
+    $desc = get_post_meta($id1, 'yaproduct_description', true);
+    $name = get_post_meta($id1, 'yaproduct_name', true);
+    $price = get_post_meta($id1, 'yaproduct_price', true);
+    $image = wp_get_attachment_image_src($id, 'full-size');
+    $currency = get_post_meta($id1, 'yaproduct_currency', true);
+?>
+<p><label for="myplugin_new_field">Название услуги\товара</label><br>
+    <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?=$name;?>"  />
+    </p><p><label for="myplugin_new_field">Описание услуги\товара</label><br>
+    <textarea rows="4" name="yaproduct_description"><?=$desc;?></textarea>
+</p><p><label for="myplugin_new_field">Цена услуги\товара</label>
+</p><p><table><tr><td><input type="text" id= "myplugin_new_field" name="yaproduct_price" value="<?=$price;?>" size=10 />
+        </td><td><input type="text" id= "myplugin_new_field" name="yaproduct_currency" value="<?=$currency;?>" size=5 /></td></tr></table></p>
+<ul id="image-uploader-meta-box-list">
+<?php if ($id) : ?>
 
+    <input type="hidden" name="yaprod" value="<?=$id;?>">
+    <li>
+        <img class="image-preview" src="<?php echo $image ? $image[0] : ''; ?>">
+    </li><br>
 
-function jekag_plugin_install(){
-    global $wpdb;
-    $table_name = $wpdb->prefix.'jekag_yaproduct';
-    $sql = "CREATE TABLE IF NOT EXISTS ".$table_name." (
-  post_id int(10) unsigned NOT NULL,
-  name tinytext NOT NULL,
-  description text NOT NULL,
-  image tinytext NOT NULL,
-  price float unsigned NOT NULL,
-  currency tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (post_id)
-  );";
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
+<?php endif; ?>
+
+<?    if($id == ''){ ?>
+
+<p class="description">Выбор изображения</p>
+         <a class="yaprod-add button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button none" href="#">Убрать</a> <br />
+
+    <?php } else { ?>
+
+<p class="description">Выбор изображения</p>
+         <a class="yaprod-add button none" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Загрузить изображение</a> <a class="change-image button" href="#" data-uploader-title="Select an image" data-uploader-button-text="Select an image">Изменить</a> <a class="remove-image button" href="#">Убрать</a> <br />
+
+    <?php } ?>
+</ul>
+<p>Скопируйте шорткод который можно вставить в текст страницы:<br>
+[yaprod]<?=$id1?>[/yaprod]
+</p>
+<?php }
+
+// регистрируем файл стилей и добавляем его в очередь
+function register_plugin_styles() {
+    global $typenow;
+    if ( 'post.php' || 'post-new.php' || $typenow == 'post' ) {
+        wp_register_style('yaproduct', plugins_url('jekag_yaproduct/yaproduct.css'));
+        wp_enqueue_style('yaproduct');
+    }
 }
-function jekag_plugin_uninstall(){
-    global $wpdb;
-    $table_name = $wpdb->prefix.'jekag_yaproduct';
-    $sql = "DROP TABLE ".$table_name.";";
-    $wpdb->query($sql);
-}
 
+// JS
+function my_scripts_method() {
+global $typenow;
+if ( $typenow == 'post' ) {
+    wp_enqueue_script('custom-script',
+        plugins_url( '/js/yaproduct.js', __FILE__ ),
+        array('jquery')
+    );
+}}
 
-function user_shortcode ($atts, $content = null)
+//обработка шорткода
+function user_shortcode ($atts, $content, $yaprod_basename)
 {
-    global $wpdb;
     global $post;
-    $table_name = $wpdb->prefix.'jekag_yaproduct';
-    $prodrow = $wpdb->get_row("SELECT * FROM $table_name WHERE post_id = ".$post->ID);
 
-
-    return '<div itemscope itemtype="http://schema.org/Product">
-    <div itemprop="name"><h1>'.$prodrow->name.'</h1></div>
-    <a itemprop="image" href="'.$prodrow->image.'">
-    <img src="'.$prodrow->image.'" title="'.$prodrow->name.'">
-    </a>
-
-    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-    <div>'.$prodrow->price.' '.$prodrow->currency.'</div>
-    <meta itemprop="price" content="'.$prodrow->price.'">
-    <meta itemprop="priceCurrency" content="'.$prodrow->currency.'">
+    wp_nonce_field( $yaprod_basename, 'yaprod_meta_nonce' );
+    $content=$content*1;
+    if ((empty($content))) $id = $post->ID; else $id=$content;
+    $desc = get_post_meta($id, 'yaproduct_description', true);
+    $name = get_post_meta($id, 'yaproduct_name', true);
+    $price = get_post_meta($id, 'yaproduct_price', true);
+    $image = wp_get_attachment_image_src(get_post_meta($id, 'yaprod', true), 'full-size');
+    $currency = get_post_meta($id, 'yaproduct_currency', true);
+    $text_to_return = '<div itemscope itemtype="http://schema.org/Product">
+        <div itemprop="name"><h1>'.$name.'</h1></div>';
+    if (!empty($image[0])) $text_to_return = $text_to_return.'<a itemprop="image" href="'.$image[0].'"><img src="'.$image[0].'" title="'.$name.'"></a>';
+    $text_to_return = $text_to_return.'<div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <div>'.$price.' '.$currency.'</div>
+    <meta itemprop="price" content="'.$price.'">
+    <meta itemprop="priceCurrency" content="'.$currency.'">
     </div>
-    <div itemprop="description">'.$prodrow->description.'</div>
+    <div itemprop="description">'.$desc.'</div>
     </div>';
+    return $text_to_return;
 }
 
+//сохранение данных метабокса
+function yaproduct_meta_save($post_id) {
+    if (!isset($_POST['yaprod_meta_nonce']) || !wp_verify_nonce($_POST['yaprod_meta_nonce'], 'jekag_yaproduct.php')) return;
 
+    if (!current_user_can('edit_post', $post_id)) return $post_id;
 
-function myplugin_add_custom_box() {
-    $screens = array( 'post', 'page' );
-    foreach ( $screens as $screen )
-        add_meta_box( 'myplugin_sectionid', 'Схема Product', 'myplugin_meta_box_callback', $screen, 'side' );
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    if(isset($_POST['yaprod'])) {
+        update_post_meta($post_id, 'yaprod', $_POST['yaprod']);
+    }
+    if(isset($_POST['yaproduct_name'])) {
+        update_post_meta($post_id, 'yaproduct_name', $_POST['yaproduct_name']);
+    }
+    if(isset($_POST['yaproduct_description'])) {
+        update_post_meta($post_id, 'yaproduct_description', $_POST['yaproduct_description']);
+    }
+    if(isset($_POST['yaproduct_price'])) {
+        update_post_meta($post_id, 'yaproduct_price', $_POST['yaproduct_price']);
+    }
+    if(isset($_POST['yaproduct_currency'])) {
+        update_post_meta($post_id, 'yaproduct_currency', $_POST['yaproduct_currency']);
+    }
 }
 
-
-/* HTML код блока */
-function myplugin_meta_box_callback() {
-    // Используем nonce для верификации
-    wp_nonce_field( plugin_basename(__FILE__), 'myplugin_noncename' );
-    global $wpdb;
-    global $post;
-    $table_name = $wpdb->prefix.'jekag_yaproduct';
-    $prodrow = $wpdb->get_row("SELECT * FROM $table_name WHERE post_id = ".$post->ID);
-    // Поля формы для введения данных
-    echo '<p><label for="myplugin_new_field">' . __("Название услуги\товара", 'myplugin_textdomain' ) . '</label><br>';
-    echo '<input type="text" id= "myplugin_new_field" name="jekag_name" value="'.$prodrow->name.'"  /><br>';
-    echo '<p></p><label for="myplugin_new_field">' . __("Описание услуги\товара", 'myplugin_textdomain' ) . '</label><br>';
-    echo '<textarea rows="4" name="jekag_description">'.$prodrow->description.'</textarea><br>';
-    echo '<p></p><label for="myplugin_new_field">' . __("Цена услуги\товара", 'myplugin_textdomain' ) . '</label><br>';
-    echo '<table><tr><td><input type="text" id= "myplugin_new_field" name="jekag_price" value="'.$prodrow->price.'" size=10 /></td>';
-    echo '<td><select name="jekag_currency">
-            <option value="'.$prodrow->currency.'" selected>руб.</option>
-            <option value="1">$</option>
-            <option value="2">грн.</option>
-          </select></td></tr></table></p>';
+//очистка метаданных плагина при его удалении
+function del_jekag_meta() {
+    delete_post_meta_by_key ( 'yaprod');
+    delete_post_meta_by_key ( 'yaproduct_name');
+    delete_post_meta_by_key ( 'yaproduct_description');
+    delete_post_meta_by_key ( 'yaproduct_price');
+    delete_post_meta_by_key ( 'yaproduct_currency');
 }
-
 
 ?>

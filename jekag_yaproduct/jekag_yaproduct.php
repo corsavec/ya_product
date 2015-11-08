@@ -9,20 +9,19 @@ Version: 1.0
 Author: Гресько Евгений
 Author URI: http://vk.com/g.jeka
 */
-include('functions.php');
-register_activation_hook(__FILE__,'jekag_plugin_install' ); //при активации плагина создаем таблицу
-register_uninstall_hook (__FILE__,'jekag_plugin_uninstall' ); //при удалении плагина удаляем таблицу
-add_action('before_delete_post', 'del_jekag_row'); //при удалении поста удаляем строку продукта
-add_action('add_meta_boxes', 'myplugin_add_custom_box'); //создание метабоксов
-if (function_exists ('add_shortcode') )        //активация обработки шорткода
-{
-    add_shortcode('ljuser', 'user_shortcode' );
-}
+require('functions.php');
+require('widget.php');
 
-
-
-
-//IMAGE
-
-
+//Активация метабокса
+add_action('add_meta_boxes', 'add_yaprod_metabox');
+//при сохранении поста
+add_action('save_post', 'yaproduct_meta_save');
+//CSS
+add_action( 'admin_head', 'register_plugin_styles' );
+//JS
+add_action('admin_footer', 'my_scripts_method');
+//активация обработки шорткода
+add_shortcode('yaprod', 'user_shortcode', basename(__FILE__));
+//при удалении плагина удаляем метаданные
+register_uninstall_hook (__FILE__,'del_jekag_meta' );
 ?>
