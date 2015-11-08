@@ -1,6 +1,5 @@
 <?php
-
-// Create meta box
+//Создание метабокса
 function add_yaprod_metabox($post_type) {
     $types = array('post');
 
@@ -26,7 +25,6 @@ function yaprod_meta_callback($post) {
     $price = get_post_meta($id1, 'yaproduct_price', true);
     $image = wp_get_attachment_image_src($id, 'full-size');
     $currency = get_post_meta($id1, 'yaproduct_currency', true);
-
 ?>
 <p><label for="myplugin_new_field">Название услуги\товара</label><br>
     <input type="text" id= "myplugin_new_field" name="yaproduct_name" value="<?=$name;?>"  />
@@ -71,7 +69,6 @@ function register_plugin_styles() {
     }
 }
 
-
 // JS
 function my_scripts_method() {
 global $typenow;
@@ -81,7 +78,6 @@ if ( $typenow == 'post' ) {
         array('jquery')
     );
 }}
-
 
 //обработка шорткода
 function user_shortcode ($atts, $content, $yaprod_basename)
@@ -135,7 +131,7 @@ function yaproduct_meta_save($post_id) {
     }
 }
 
-//удаление метаданных удаленного поста
+//очистка метаданных плагина при его удалении
 function del_jekag_meta() {
     delete_post_meta_by_key ( 'yaprod');
     delete_post_meta_by_key ( 'yaproduct_name');

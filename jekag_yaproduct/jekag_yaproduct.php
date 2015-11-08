@@ -12,19 +12,16 @@ Author URI: http://vk.com/g.jeka
 require('functions.php');
 require('widget.php');
 
+//Активация метабокса
 add_action('add_meta_boxes', 'add_yaprod_metabox');
-
-
 //при сохранении поста
 add_action('save_post', 'yaproduct_meta_save');
-// CSS
+//CSS
 add_action( 'admin_head', 'register_plugin_styles' );
 //JS
 add_action('admin_footer', 'my_scripts_method');
 //активация обработки шорткода
 add_shortcode('yaprod', 'user_shortcode', basename(__FILE__));
-
-register_uninstall_hook (__FILE__,'del_jekag_meta' ); //при удалении плагина удаляем таблицу
-//add_action('before_delete_post', 'del_jekag_meta'); //при удалении поста удаляем строку продукта
-
+//при удалении плагина удаляем метаданные
+register_uninstall_hook (__FILE__,'del_jekag_meta' );
 ?>
